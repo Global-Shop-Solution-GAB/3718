@@ -1,0 +1,764 @@
+Program.Sub.ScreenSU.Start
+gui.fGKD..create
+gui.fGKD..caption("GKD Super Awesome Report")
+gui.fGKD..size(4365,1935)
+gui.fGKD..position(0,0)
+gui.fGKD..event(unload,fgkd_unload)
+gui.fGKD..alwaysontop(False)
+gui.fGKD..fontname("Arial")
+gui.fGKD..fontsize(8)
+gui.fGKD..forecolor(0)
+gui.fGKD..fontstyle(,,,,)
+gui.fGKD..BackColor(-2147483633)
+gui.fGKD..controlbox(True)
+gui.fGKD..maxbutton(False)
+gui.fGKD..minbutton(True)
+gui.fGKD..mousepointer(0)
+gui.fGKD..moveable(True)
+gui.fGKD..sizeable(False)
+gui.fGKD..ShowInTaskBar(True)
+gui.fGKD..titlebar(True)
+gui.fGKD.lblBegDt.create(label,"Beginning Date",True,1935,255,1,110,125,True,0,Arial,8,-2147483633,0)
+gui.fGKD.lblEndDt.create(label,"Ending Date",True,1935,255,1,2140,125,True,0,Arial,8,-2147483633,0)
+gui.fGKD.dtpBegDt.create(datepicker)
+gui.fGKD.dtpBegDt.visible(True)
+gui.fGKD.dtpBegDt.size(1935,285)
+gui.fGKD.dtpBegDt.zorder(0)
+gui.fGKD.dtpBegDt.position(100,320)
+gui.fGKD.dtpBegDt.enabled(True)
+gui.fGKD.dtpBegDt.checkbox(False)
+gui.fGKD.dtpEndDt.create(datepicker)
+gui.fGKD.dtpEndDt.visible(True)
+gui.fGKD.dtpEndDt.size(1935,285)
+gui.fGKD.dtpEndDt.zorder(0)
+gui.fGKD.dtpEndDt.position(2135,315)
+gui.fGKD.dtpEndDt.enabled(True)
+gui.fGKD.dtpEndDt.checkbox(False)
+gui.fGKD.cmdOk.create(button)
+gui.fGKD.cmdOk.caption("Ok")
+gui.fGKD.cmdOk.visible(True)
+gui.fGKD.cmdOk.size(855,375)
+gui.fGKD.cmdOk.zorder(0)
+gui.fGKD.cmdOk.position(115,815)
+gui.fGKD.cmdOk.enabled(True)
+gui.fGKD.cmdOk.fontname("Arial")
+gui.fGKD.cmdOk.fontsize(8)
+gui.fGKD.cmdOk.event(click,cmdok_click)
+
+
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+
+Variable.Global.uEDate.Declare(Date,01/01/1990)
+Variable.UDT.uWrkOrd.Define("Job",String)
+Variable.UDT.uWrkOrd.Define("Labor",Float)
+Variable.UDT.uWrkOrd.Define("Ovrhd",Float)
+Variable.UDT.uWrkOrd.Define("10",Float)
+Variable.UDT.uWrkOrd.Define("20",Float)
+Variable.UDT.uWrkOrd.Define("30",Float)
+Variable.UDT.uWrkOrd.Define("31",Float)
+Variable.UDT.uWrkOrd.Define("51",Float)
+Variable.UDT.uWrkOrd.Define("C1",Float)
+Variable.UDT.uWrkOrd.Define("C2",Float)
+Variable.UDT.uWrkOrd.Define("C3",Float)
+Variable.UDT.uWrkOrd.Define("CC",Float)
+Variable.UDT.uWrkOrd.Define("CG",Float)
+Variable.UDT.uWrkOrd.Define("FA",Float)
+Variable.UDT.uWrkOrd.Define("PB",Float)
+Variable.UDT.uWrkOrd.Define("R1",Float)
+Variable.UDT.uWrkOrd.Define("R2",Float)
+Variable.UDT.uWrkOrd.Define("R3",Float)
+Variable.UDT.uWrkOrd.Define("R5",Float)
+Variable.UDT.uWrkOrd.Define("S1",Float)
+Variable.UDT.uWrkOrd.Define("S2",Float)
+Variable.UDT.uWrkOrd.Define("S3",Float)
+Variable.UDT.uWrkOrd.Define("W1",Float)
+Variable.UDT.uWrkOrd.Define("W2",Float)
+Variable.UDT.uWrkOrd.Define("W3",Float)
+Variable.UDT.uWrkOrd.Define("W5",Float)
+Variable.UDT.uWrkOrd.Define("Z1",Float)
+Variable.UDT.uWrkOrd.Define("Z2",Float)
+Variable.UDT.uWrkOrd.Define("ZZ",Float)
+Variable.UDT.uWrkOrd.Define("Outside",Float)
+Variable.UDT.uWrkOrd.Define("PL",String)
+Variable.uGlobal.uWrkOrd.Declare("uWrkOrd")
+Variable.Global.uJob.Declare(String)
+Variable.Global.uBDate.Declare(Date,01/01/1990)
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+'Coded by: MLA
+'Project Start Date: 11/14/2010
+'Notes:
+'GKD
+
+F.ODBC.Connection!con.OpenConnection(V.Ambient.PDSN,V.Ambient.PUser,V.Ambient.PPass)
+Gui.fGKD..Show
+
+Program.Sub.Main.End
+
+program.sub.fgkd_unload.start
+F.ODBC.Connection!con.Close
+F.Intrinsic.Control.End
+
+program.sub.fgkd_unload.end
+
+program.sub.cmdok_click.start
+V.Local.sError.Declare(String)
+
+Function.Intrinsic.Control.SetErrorHandler("Click_Err")
+Function.Intrinsic.Control.ClearErrors
+
+V.Global.uBDate.Set(V.Screen.fGKD!dtpBegDt.Value)
+V.Global.uEDate.Set(V.Screen.fGKD!dtpEndDt.Value)
+Gui.fGKD..Visible(0)
+F.Intrinsic.Control.CallSub(Proc)
+
+Function.Intrinsic.Control.ExitSub
+
+Function.Intrinsic.Control.Label("Click_Err")
+Function.Intrinsic.Control.If(Variable.Ambient.ErrorNumber,"<>",0)
+	Function.Intrinsic.String.Concat("Error Occurred ",Variable.Ambient.ErrorNumber," with description ",Variable.Ambient.ErrorDescription,Variable.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+program.sub.cmdok_click.end
+
+Program.Sub.Proc.Start
+V.Local.sError.Declare(String)
+V.Local.sSql.Declare(String)
+V.Local.sRet.Declare(String)
+V.Local.iUB.Declare(Long)
+V.Local.iRet.Declare(Long)
+
+
+Function.Intrinsic.Control.SetErrorHandler("Labor_Err")
+Function.Intrinsic.Control.ClearErrors
+
+V.uGlobal.uWrkOrd.Redim(-1,-1)
+F.Intrinsic.String.Concat("Select  JOB, SUFFIX, AMOUNT_LABOR, AMT_OVERHEAD, LMO, PART from V_JOB_DETAIL where DATE_SEQUENCE >= '",V.Global.uBDate.PervasiveDate,"' and DATE_SEQUENCE <= '",V.Global.uEDate.PervasiveDate,"'",V.Local.sSql)
+F.ODBC.Connection!con.OpenRecordsetRO("rst",V.Local.sSql)
+F.Intrinsic.Control.If(V.ODBC.con!rst.EOF,=,"True")
+	F.ODBC.con!rst.Close
+	F.Intrinsic.Control.CallSub(Write)
+F.Intrinsic.Control.Else
+	F.Intrinsic.Control.DoUntil(V.ODBC.con!rst.EOF,=,"True")
+		F.Intrinsic.String.Concat(V.ODBC.con!rst.FieldValLTrim!JOB,"-",V.ODBC.con!rst.FieldValLTrim!SUFFIX,V.Global.uJob)
+		F.Intrinsic.Control.If(V.ODBC.con!rst.FieldValLTrim!LMO,=,"L")
+			F.Intrinsic.Control.CallSub(Labrovrhd)
+		F.Intrinsic.Control.ElseIf(V.ODBC.con!rst.FieldValLTrim!LMO,=,"M")
+			F.Intrinsic.Control.CallSub(Matl)
+		F.Intrinsic.Control.ElseIf(V.ODBC.con!rst.FieldValLTrim!LMO,=,"O")
+			F.Intrinsic.Control.CallSub(Outside)
+		F.Intrinsic.Control.EndIf
+		F.ODBC.con!rst.MoveNext
+	F.Intrinsic.Control.Loop
+	F.ODBC.con!rst.Close
+	F.Intrinsic.Control.CallSub(Write)
+F.Intrinsic.Control.EndIf
+
+Function.Intrinsic.Control.ExitSub
+
+Function.Intrinsic.Control.Label("Labor_Err")
+Function.Intrinsic.Control.If(Variable.Ambient.ErrorNumber,"<>",0)
+	Function.Intrinsic.String.Concat("Error Occurred ",Variable.Ambient.ErrorNumber," with description ",Variable.Ambient.ErrorDescription,Variable.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.Proc.End
+
+Program.Sub.LabrOvrhd.Start
+V.Local.sError.Declare(String)
+V.Local.sRet.Declare(String)
+V.Local.iUB.Declare(Long)
+V.Local.iRet.Declare(Long)
+V.Local.sSql.Declare(String)
+V.Local.sJPL.Declare(String)
+
+Function.Intrinsic.Control.SetErrorHandler("LabrOvrhd_Err")
+Function.Intrinsic.Control.ClearErrors
+
+F.Intrinsic.Control.If(V.uGlobal.uWrkOrd.UBound,=,-1)
+	V.uGlobal.uWrkOrd.Redim(0,0)
+	F.Intrinsic.String.Concat("Select PRODUCT_LINE from V_JOB_HEADER where JOB = '",V.ODBC.con!rst.FieldValLTrim!JOB,"' and SUFFIX = '",V.ODBC.con!rst.FieldValLTrim!SUFFIX,"'",V.Local.sSql)
+	F.ODBC.Connection!con.OpenRecordsetRO("rstJob",V.Local.sSql)
+	F.Intrinsic.Control.If(V.ODBC.con!rstJob.EOF,=,"True")
+	F.Intrinsic.Control.Else
+		V.Local.sJPL.Set(V.ODBC.con!rstJob.FieldValLTrim!PRODUCT_LINE)
+		V.uGlobal.uWrkOrd!PL.Set(V.Local.sJPL)
+	F.Intrinsic.Control.EndIf
+	F.ODBC.con!rstJob.Close
+	V.uGlobal.uWrkOrd!Job.Set(V.Global.uJob)
+	V.uGlobal.uWrkOrd!Labor.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+	V.uGlobal.uWrkOrd!Ovrhd.Set(V.ODBC.con!rst.FieldValFloat!AMT_OVERHEAD)
+F.Intrinsic.Control.Else
+	F.Intrinsic.Variable.UDTSeek(V.uGlobal.uWrkOrd!Job,V.Global.uJob,0,V.Local.sRet)
+	F.Intrinsic.Control.If(V.Local.sRet,=,"")
+		V.Local.iUB.Set(V.uGlobal.uWrkOrd.UBound)
+		F.Intrinsic.Math.Add(V.Local.iUB,1,V.Local.iUB)
+		V.uGlobal.uWrkOrd.RedimPreserve(V.uGlobal.uWrkOrd.LBound,V.Local.iUB)
+		F.Intrinsic.String.Concat("Select PRODUCT_LINE from V_JOB_HEADER where JOB = '",V.ODBC.con!rst.FieldValLTrim!JOB,"' and SUFFIX = '",V.ODBC.con!rst.FieldValLTrim!SUFFIX,"'",V.Local.sSql)
+		F.ODBC.Connection!con.OpenRecordsetRO("rstJob",V.Local.sSql)
+		F.Intrinsic.Control.If(V.ODBC.con!rstJob.EOF,=,"True")
+		F.Intrinsic.Control.Else
+			V.Local.sJPL.Set(V.ODBC.con!rstJob.FieldValLTrim!PRODUCT_LINE)
+			V.uGlobal.uWrkOrd(V.Local.iUB)!PL.Set(V.Local.sJPL)
+		F.Intrinsic.Control.EndIf
+		F.ODBC.con!rstJob.Close
+		V.uGlobal.uWrkOrd(V.Local.iUB)!Job.Set(V.Global.uJob)
+		V.uGlobal.uWrkOrd(V.Local.iUB)!Labor.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+		V.uGlobal.uWrkOrd(V.Local.iUB)!Ovrhd.Set(V.ODBC.con!rst.FieldValFloat!AMT_OVERHEAD)
+	F.Intrinsic.Control.Else
+		V.Local.iRet.Set(V.Local.sRet.Long)
+		F.Intrinsic.Math.Add(V.uGlobal.uWrkOrd(V.Local.iRet)!Labor,V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR,V.uGlobal.uWrkOrd(V.Local.iRet)!Labor)
+		F.Intrinsic.Math.Add(V.uGlobal.uWrkOrd(V.Local.iRet)!Ovrhd,V.ODBC.con!rst.FieldValFloat!AMT_OVERHEAD,V.uGlobal.uWrkOrd(V.Local.iRet)!Ovrhd)
+	F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.EndIf
+
+Function.Intrinsic.Control.ExitSub
+
+Function.Intrinsic.Control.Label("LabrOvrhd_Err")
+Function.Intrinsic.Control.If(Variable.Ambient.ErrorNumber,"<>",0)
+	Function.Intrinsic.String.Concat("Error Occurred ",Variable.Ambient.ErrorNumber," with description ",Variable.Ambient.ErrorDescription,Variable.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+
+Program.Sub.LabrOvrhd.End
+
+Program.Sub.Matl.Start
+V.Local.sError.Declare(String)
+V.Local.sSql.Declare(String)
+V.Local.sPart.Declare(String)
+V.Local.sPL.Declare(String)
+V.Local.sRet.Declare(String)
+V.Local.iUB.Declare(Long)
+V.Local.iRet.Declare(Long)
+V.Local.sJPL.Declare(String)
+
+Function.Intrinsic.Control.SetErrorHandler("Matl_Err")
+Function.Intrinsic.Control.ClearErrors
+
+V.Local.sPart.Set(V.ODBC.con!rst.FieldVal!PART)
+F.Intrinsic.String.Concat("Select PRODUCT_LINE from V_INVENTORY_MSTR where PART = '",V.Local.sPart,"'",V.Local.sSql)
+F.ODBC.Connection!con.OpenRecordsetRO("rstInv",V.Local.sSql)
+F.Intrinsic.Control.If(V.ODBC.con!rstInv.EOF,=,"TRUE")
+F.Intrinsic.Control.Else
+	V.Local.sPL.Set(V.ODBC.con!rstInv.FieldValLTrim!PRODUCT_LINE)
+	F.Intrinsic.Control.If(V.uGlobal.uWrkOrd.UBound,=,-1)
+		V.uGlobal.uWrkOrd.Redim(0,0)
+		F.Intrinsic.String.Concat("Select PRODUCT_LINE from V_JOB_HEADER where JOB = '",V.ODBC.con!rst.FieldValLTrim!JOB,"' and SUFFIX = '",V.ODBC.con!rst.FieldValLTrim!SUFFIX,"'",V.Local.sSql)
+		F.ODBC.Connection!con.OpenRecordsetRO("rstJob",V.Local.sSql)
+		F.Intrinsic.Control.If(V.ODBC.con!rstJob.EOF,=,"True")
+		F.Intrinsic.Control.Else
+			V.Local.sJPL.Set(V.ODBC.con!rstJob.FieldValLTrim!PRODUCT_LINE)
+			V.uGlobal.uWrkOrd!PL.Set(V.Local.sJPL)
+		F.Intrinsic.Control.EndIf
+		F.ODBC.con!rstJob.Close
+		V.uGlobal.uWrkOrd!Job.Set(V.Global.uJob)
+		F.Intrinsic.Control.If(V.Local.sPL,=,"10")
+			V.uGlobal.uWrkOrd!10.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+		F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"20")
+			V.uGlobal.uWrkOrd!20.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+		F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"30")
+			V.uGlobal.uWrkOrd!30.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+		F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"31")
+			V.uGlobal.uWrkOrd!31.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+		F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"51")
+			V.uGlobal.uWrkOrd!51.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+		F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"C1")
+			V.uGlobal.uWrkOrd!C1.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+		F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"C2")
+			V.uGlobal.uWrkOrd!C2.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+		F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"C3")
+			V.uGlobal.uWrkOrd!C3.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+		F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"CC")
+			V.uGlobal.uWrkOrd!CC.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+		F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"CG")
+			V.uGlobal.uWrkOrd!CG.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+		F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"FA")
+			V.uGlobal.uWrkOrd!FA.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+		F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"PB")
+			V.uGlobal.uWrkOrd!PB.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+		F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"R1")
+			V.uGlobal.uWrkOrd!R1.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+		F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"R2")
+			V.uGlobal.uWrkOrd!R2.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+		F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"R3")
+			V.uGlobal.uWrkOrd!R3.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+		F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"R5")
+			V.uGlobal.uWrkOrd!R5.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+		F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"S1")
+			V.uGlobal.uWrkOrd!S1.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+		F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"S2")
+			V.uGlobal.uWrkOrd!S2.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+		F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"S3")
+			V.uGlobal.uWrkOrd!S3.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+		F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"W1")
+			V.uGlobal.uWrkOrd!W1.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+		F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"W2")
+			V.uGlobal.uWrkOrd!W2.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+		F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"W3")
+			V.uGlobal.uWrkOrd!W3.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+		F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"W5")
+			V.uGlobal.uWrkOrd!W5.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+		F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"Z1")
+			V.uGlobal.uWrkOrd!Z1.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+		F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"Z2")
+			V.uGlobal.uWrkOrd!Z2.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+		F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"ZZ")
+			V.uGlobal.uWrkOrd!ZZ.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+		F.Intrinsic.Control.EndIf
+	F.Intrinsic.Control.Else
+		F.Intrinsic.Variable.UDTSeek(V.uGlobal.uWrkOrd!Job,V.Global.uJob,0,V.Local.sRet)
+		F.Intrinsic.Control.If(V.Local.sRet,=,"")
+			V.Local.iUB.Set(V.uGlobal.uWrkOrd.UBound)
+			F.Intrinsic.Math.Add(V.Local.iUB,1,V.Local.iUB)
+			V.uGlobal.uWrkOrd.RedimPreserve(V.uGlobal.uWrkOrd.LBound,V.Local.iUB)
+			F.Intrinsic.String.Concat("Select PRODUCT_LINE from V_JOB_HEADER where JOB = '",V.ODBC.con!rst.FieldValLTrim!JOB,"' and SUFFIX = '",V.ODBC.con!rst.FieldValLTrim!SUFFIX,"'",V.Local.sSql)
+			F.ODBC.Connection!con.OpenRecordsetRO("rstJob",V.Local.sSql)
+			F.Intrinsic.Control.If(V.ODBC.con!rstJob.EOF,=,"True")
+			F.Intrinsic.Control.Else
+				V.Local.sJPL.Set(V.ODBC.con!rstJob.FieldValLTrim!PRODUCT_LINE)
+				V.uGlobal.uWrkOrd(V.Local.iUB)!PL.Set(V.Local.sJPL)
+			F.Intrinsic.Control.EndIf
+			F.ODBC.con!rstJob.Close
+			V.uGlobal.uWrkOrd(v.Local.iUB)!Job.Set(V.Global.uJob)
+			F.Intrinsic.Control.If(V.Local.sPL,=,"10")
+				V.uGlobal.uWrkOrd(V.Local.iUB)!10.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"20")
+				V.uGlobal.uWrkOrd(V.Local.iUB)!20.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"30")
+				V.uGlobal.uWrkOrd(V.Local.iUB)!30.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"31")
+				V.uGlobal.uWrkOrd(V.Local.iUB)!31.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"51")
+				V.uGlobal.uWrkOrd(V.Local.iUB)!51.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"C1")
+				V.uGlobal.uWrkOrd(V.Local.iUB)!C1.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"C2")
+				V.uGlobal.uWrkOrd(V.Local.iUB)!C2.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"C3")
+				V.uGlobal.uWrkOrd(V.Local.iUB)!C3.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"CC")
+				V.uGlobal.uWrkOrd(V.Local.iUB)!CC.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"CG")
+				V.uGlobal.uWrkOrd(V.Local.iUB)!CG.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"FA")
+				V.uGlobal.uWrkOrd(V.Local.iUB)!FA.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"PB")
+				V.uGlobal.uWrkOrd(V.Local.iUB)!PB.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"R1")
+				V.uGlobal.uWrkOrd(V.Local.iUB)!R1.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"R2")
+				V.uGlobal.uWrkOrd(V.Local.iUB)!R2.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"R3")
+				V.uGlobal.uWrkOrd(V.Local.iUB)!R3.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"R5")
+				V.uGlobal.uWrkOrd(V.Local.iUB)!R5.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"S1")
+				V.uGlobal.uWrkOrd(V.Local.iUB)!S1.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"S2")
+				V.uGlobal.uWrkOrd(V.Local.iUB)!S2.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"S3")
+				V.uGlobal.uWrkOrd(V.Local.iUB)!S3.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"W1")
+				V.uGlobal.uWrkOrd(V.Local.iUB)!W1.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"W2")
+				V.uGlobal.uWrkOrd(V.Local.iUB)!W2.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"W3")
+				V.uGlobal.uWrkOrd(V.Local.iUB)!W3.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"W5")
+				V.uGlobal.uWrkOrd(V.Local.iUB)!W5.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"Z1")
+				V.uGlobal.uWrkOrd(V.Local.iUB)!Z1.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"Z2")
+				V.uGlobal.uWrkOrd(V.Local.iUB)!Z2.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"ZZ")
+				V.uGlobal.uWrkOrd(V.Local.iUB)!ZZ.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+			F.Intrinsic.Control.EndIf
+		F.Intrinsic.Control.Else
+			V.Local.iRet.Set(V.Local.sRet.Long)
+			F.Intrinsic.Control.If(V.Local.sPL,=,"10")
+				F.Intrinsic.Math.Add(V.uGlobal.uWrkOrd(V.Local.iRet)!10,V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR,V.uGlobal.uWrkOrd(V.Local.iRet)!10)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"20")
+				F.Intrinsic.Math.Add(V.uGlobal.uWrkOrd(V.Local.iRet)!20,V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR,V.uGlobal.uWrkOrd(V.Local.iRet)!20)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"30")
+				F.Intrinsic.Math.Add(V.uGlobal.uWrkOrd(V.Local.iRet)!30,V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR,V.uGlobal.uWrkOrd(V.Local.iRet)!30)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"31")
+				F.Intrinsic.Math.Add(V.uGlobal.uWrkOrd(V.Local.iRet)!31,V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR,V.uGlobal.uWrkOrd(V.Local.iRet)!31)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"51")
+				F.Intrinsic.Math.Add(V.uGlobal.uWrkOrd(V.Local.iRet)!51,V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR,V.uGlobal.uWrkOrd(V.Local.iRet)!51)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"C1")
+				F.Intrinsic.Math.Add(V.uGlobal.uWrkOrd(V.Local.iRet)!C1,V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR,V.uGlobal.uWrkOrd(V.Local.iRet)!C1)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"C2")
+				F.Intrinsic.Math.Add(V.uGlobal.uWrkOrd(V.Local.iRet)!C2,V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR,V.uGlobal.uWrkOrd(V.Local.iRet)!C2)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"C3")
+				F.Intrinsic.Math.Add(V.uGlobal.uWrkOrd(V.Local.iRet)!C3,V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR,V.uGlobal.uWrkOrd(V.Local.iRet)!C3)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"CC")
+				F.Intrinsic.Math.Add(V.uGlobal.uWrkOrd(V.Local.iRet)!CC,V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR,V.uGlobal.uWrkOrd(V.Local.iRet)!CC)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"CG")
+				F.Intrinsic.Math.Add(V.uGlobal.uWrkOrd(V.Local.iRet)!CG,V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR,V.uGlobal.uWrkOrd(V.Local.iRet)!CG)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"FA")
+				F.Intrinsic.Math.Add(V.uGlobal.uWrkOrd(V.Local.iRet)!FA,V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR,V.uGlobal.uWrkOrd(V.Local.iRet)!FA)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"PB")
+				F.Intrinsic.Math.Add(V.uGlobal.uWrkOrd(V.Local.iRet)!PB,V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR,V.uGlobal.uWrkOrd(V.Local.iRet)!PB)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"R1")
+				F.Intrinsic.Math.Add(V.uGlobal.uWrkOrd(V.Local.iRet)!R1,V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR,V.uGlobal.uWrkOrd(V.Local.iRet)!R1)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"R2")
+				F.Intrinsic.Math.Add(V.uGlobal.uWrkOrd(V.Local.iRet)!R2,V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR,V.uGlobal.uWrkOrd(V.Local.iRet)!R2)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"R3")
+				F.Intrinsic.Math.Add(V.uGlobal.uWrkOrd(V.Local.iRet)!R3,V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR,V.uGlobal.uWrkOrd(V.Local.iRet)!R3)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"R5")
+				F.Intrinsic.Math.Add(V.uGlobal.uWrkOrd(V.Local.iRet)!R5,V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR,V.uGlobal.uWrkOrd(V.Local.iRet)!R5)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"S1")
+				F.Intrinsic.Math.Add(V.uGlobal.uWrkOrd(V.Local.iRet)!S1,V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR,V.uGlobal.uWrkOrd(V.Local.iRet)!S1)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"S2")
+				F.Intrinsic.Math.Add(V.uGlobal.uWrkOrd(V.Local.iRet)!S2,V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR,V.uGlobal.uWrkOrd(V.Local.iRet)!S2)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"S3")
+				F.Intrinsic.Math.Add(V.uGlobal.uWrkOrd(V.Local.iRet)!S3,V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR,V.uGlobal.uWrkOrd(V.Local.iRet)!S3)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"W1")
+				F.Intrinsic.Math.Add(V.uGlobal.uWrkOrd(V.Local.iRet)!W1,V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR,V.uGlobal.uWrkOrd(V.Local.iRet)!W1)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"W2")
+				F.Intrinsic.Math.Add(V.uGlobal.uWrkOrd(V.Local.iRet)!W2,V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR,V.uGlobal.uWrkOrd(V.Local.iRet)!W2)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"W3")
+				F.Intrinsic.Math.Add(V.uGlobal.uWrkOrd(V.Local.iRet)!W3,V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR,V.uGlobal.uWrkOrd(V.Local.iRet)!W3)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"W5")
+				F.Intrinsic.Math.Add(V.uGlobal.uWrkOrd(V.Local.iRet)!W5,V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR,V.uGlobal.uWrkOrd(V.Local.iRet)!W5)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"Z1")
+				F.Intrinsic.Math.Add(V.uGlobal.uWrkOrd(V.Local.iRet)!Z1,V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR,V.uGlobal.uWrkOrd(V.Local.iRet)!Z1)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"Z2")
+				F.Intrinsic.Math.Add(V.uGlobal.uWrkOrd(V.Local.iRet)!Z2,V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR,V.uGlobal.uWrkOrd(V.Local.iRet)!Z2)
+			F.Intrinsic.Control.ElseIf(V.Local.sPL,=,"ZZ")
+				F.Intrinsic.Math.Add(V.uGlobal.uWrkOrd(V.Local.iRet)!ZZ,V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR,V.uGlobal.uWrkOrd(V.Local.iRet)!ZZ)
+			F.Intrinsic.Control.EndIf
+		F.Intrinsic.Control.EndIf
+	F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.EndIf
+F.ODBC.con!rstInv.Close
+
+Function.Intrinsic.Control.ExitSub
+
+Function.Intrinsic.Control.Label("Matl_Err")
+Function.Intrinsic.Control.If(Variable.Ambient.ErrorNumber,"<>",0)
+	Function.Intrinsic.String.Concat("Error Occurred ",Variable.Ambient.ErrorNumber," with description ",Variable.Ambient.ErrorDescription,Variable.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.Matl.End
+
+Program.Sub.Outside.Start
+V.Local.sError.Declare(String)
+V.Local.sRet.Declare(String)
+V.Local.iUB.Declare(Long)
+V.Local.iRet.Declare(Long)
+V.Local.sSql.Declare(String)
+V.Local.sJPL.Declare(String)
+
+Function.Intrinsic.Control.SetErrorHandler("Outside_Err")
+Function.Intrinsic.Control.ClearErrors
+
+F.Intrinsic.Control.If(V.uGlobal.uWrkOrd.UBound,=,-1)
+	V.uGlobal.uWrkOrd.Redim(0,0)
+	F.Intrinsic.String.Concat("Select PRODUCT_LINE from V_JOB_HEADER where JOB = '",V.ODBC.con!rst.FieldValLTrim!JOB,"' and SUFFIX = '",V.ODBC.con!rst.FieldValLTrim!SUFFIX,"'",V.Local.sSql)
+	F.ODBC.Connection!con.OpenRecordsetRO("rstJob",V.Local.sSql)
+	F.Intrinsic.Control.If(V.ODBC.con!rstJob.EOF,=,"True")
+	F.Intrinsic.Control.Else
+		V.Local.sJPL.Set(V.ODBC.con!rstJob.FieldValLTrim!PRODUCT_LINE)
+		V.uGlobal.uWrkOrd!PL.Set(V.Local.sJPL)
+	F.Intrinsic.Control.EndIf
+	F.ODBC.con!rstJob.Close
+	V.uGlobal.uWrkOrd!Job.Set(V.Global.uJob)
+	V.uGlobal.uWrkOrd!Outside.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+F.Intrinsic.Control.Else
+	F.Intrinsic.Variable.UDTSeek(V.uGlobal.uWrkOrd!Job,V.Global.uJob,0,V.Local.sRet)
+	F.Intrinsic.Control.If(V.Local.sRet,=,"")
+		V.Local.iUB.Set(V.uGlobal.uWrkOrd.UBound)
+		F.Intrinsic.Math.Add(V.Local.iUB,1,V.Local.iUB)
+		V.uGlobal.uWrkOrd.RedimPreserve(V.uGlobal.uWrkOrd.LBound,V.Local.iUB)
+		F.Intrinsic.String.Concat("Select PRODUCT_LINE from V_JOB_HEADER where JOB = '",V.ODBC.con!rst.FieldValLTrim!JOB,"' and SUFFIX = '",V.ODBC.con!rst.FieldValLTrim!SUFFIX,"'",V.Local.sSql)
+		F.ODBC.Connection!con.OpenRecordsetRO("rstJob",V.Local.sSql)
+		F.Intrinsic.Control.If(V.ODBC.con!rstJob.EOF,=,"True")
+		F.Intrinsic.Control.Else
+			V.Local.sJPL.Set(V.ODBC.con!rstJob.FieldValLTrim!PRODUCT_LINE)
+			V.uGlobal.uWrkOrd(V.Local.iUB)!PL.Set(V.Local.sJPL)
+		F.Intrinsic.Control.EndIf
+		F.ODBC.con!rstJob.Close
+		V.uGlobal.uWrkOrd(V.Local.iUB)!Job.Set(V.Global.uJob)
+		V.uGlobal.uWrkOrd(V.Local.iUB)!Outside.Set(V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR)
+	F.Intrinsic.Control.Else
+		V.Local.iRet.Set(V.Local.sRet.Long)
+		F.Intrinsic.Math.Add(V.uGlobal.uWrkOrd(V.Local.iRet)!Outside,V.ODBC.con!rst.FieldValFloat!AMOUNT_LABOR,V.uGlobal.uWrkOrd(V.Local.iRet)!Outside)
+	F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.EndIf
+
+Function.Intrinsic.Control.ExitSub
+
+Function.Intrinsic.Control.Label("Outside_Err")
+Function.Intrinsic.Control.If(Variable.Ambient.ErrorNumber,"<>",0)
+	Function.Intrinsic.String.Concat("Error Occurred ",Variable.Ambient.ErrorNumber," with description ",Variable.Ambient.ErrorDescription,Variable.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.Outside.End
+
+Program.Sub.Write.Start
+V.Local.sError.Declare(String)
+V.Local.i.Declare(Long)
+V.Local.sJob.Declare(String)
+V.Local.sSuf.Declare(String)
+V.Local.sSql.Declare(String)
+V.Local.iBi.Declare(Long)
+V.Local.sParam.Declare(String)
+V.Local.sParamVal.Declare(String)
+
+Function.Intrinsic.Control.SetErrorHandler("Write_Err")
+Function.Intrinsic.Control.ClearErrors
+
+F.Intrinsic.Control.If(V.uGlobal.uWrkOrd.UBound,=,-1)
+	F.Intrinsic.UI.Msgbox("No records found!","Error")
+	F.Intrinsic.Control.CallSub(Fgkd_unload)
+F.Intrinsic.Control.Else
+	F.Intrinsic.String.Concat("Select * from ATG_3718_Gkd_Sar where TRMNL = '",V.Caller.Terminal,"'",V.Local.sSql)
+	F.ODBC.Connection!con.OpenRecordsetRW("rst",V.Local.sSql)
+	F.Intrinsic.Control.If(V.ODBC.con!rst.EOF,=,"False")
+		F.Intrinsic.String.Concat("Delete ATG_3718_Gkd_Sar where TRMNL = '",V.Caller.Terminal,"'",V.Local.sSql)
+		F.ODBC.Connection!con.Execute(V.Local.sSql)
+	F.Intrinsic.Control.EndIf
+	F.ODBC.con!rst.Close
+	F.ODBC.Connection!con.OpenRecordsetRW("rst","Select * From ATG_3718_Gkd_Sar")
+	F.Intrinsic.Control.For(V.Local.i,V.uGlobal.uWrkOrd.LBound,V.uGlobal.uWrkOrd.UBound,1)
+		F.ODBC.con!rst.AddNew
+		F.ODBC.con!rst.Set!TRMNL(V.Caller.Terminal)
+		F.Intrinsic.String.Split(V.uGlobal.uWrkOrd(v.Local.i)!Job,"-",V.Local.sJob)
+		V.Local.sSuf.Set(V.Local.sJob(1))
+		V.Local.sJob.Set(V.Local.sJob(0))
+		F.ODBC.con!rst.Set!JOB(V.Local.sJob)
+		F.ODBC.con!rst.Set!SUFFIX(V.Local.sSuf.Trim)
+		F.ODBC.con!rst.Set!PL_JOB(V.uGlobal.uWrkOrd(V.Local.i)!PL)
+		F.Intrinsic.Control.If(V.uGlobal.uWrkOrd(V.Local.i)!Labor,=,"")
+			V.uGlobal.uWrkOrd(v.Local.i)!Labor.Set(0.00)
+			F.ODBC.con!rst.Set!LABOR(V.uGlobal.uWrkOrd(V.Local.i)!Labor)
+		F.Intrinsic.Control.Else
+			F.ODBC.con!rst.Set!LABOR(V.uGlobal.uWrkOrd(V.Local.i)!Labor)
+		F.Intrinsic.Control.EndIf
+
+		F.Intrinsic.Control.If(V.uGlobal.uWrkOrd(V.Local.i)!Ovrhd,=,"")
+			V.uGlobal.uWrkOrd(v.Local.i)!Ovrhd.Set(0.00)
+			F.ODBC.con!rst.Set!OVRHD(V.uGlobal.uWrkOrd(V.Local.i)!Ovrhd)
+		F.Intrinsic.Control.Else
+			F.ODBC.con!rst.Set!OVRHD(V.uGlobal.uWrkOrd(V.Local.i)!Ovrhd)
+		F.Intrinsic.Control.EndIf
+
+		F.Intrinsic.Control.If(V.uGlobal.uWrkOrd(V.Local.i)!Outside,=,"")
+			V.uGlobal.uWrkOrd(v.Local.i)!Outside.Set(0.00)
+			F.ODBC.con!rst.Set!OUTSIDE(V.uGlobal.uWrkOrd(V.Local.i)!Outside)
+		F.Intrinsic.Control.Else
+			F.ODBC.con!rst.Set!OUTSIDE(V.uGlobal.uWrkOrd(V.Local.i)!Outside)
+		F.Intrinsic.Control.EndIf
+
+		F.Intrinsic.Control.If(V.uGlobal.uWrkOrd(V.Local.i)!10,=,"")
+			V.uGlobal.uWrkOrd(v.Local.i)!10.Set(0.00)
+			F.ODBC.con!rst.Set!PL_10(V.uGlobal.uWrkOrd(V.Local.i)!10)
+		F.Intrinsic.Control.Else
+			F.ODBC.con!rst.Set!PL_10(V.uGlobal.uWrkOrd(V.Local.i)!10)
+		F.Intrinsic.Control.EndIf
+
+		F.Intrinsic.Control.If(V.uGlobal.uWrkOrd(V.Local.i)!20,=,"")
+			V.uGlobal.uWrkOrd(v.Local.i)!20.Set(0.00)
+			F.ODBC.con!rst.Set!PL_20(V.uGlobal.uWrkOrd(V.Local.i)!20)
+		F.Intrinsic.Control.Else
+			F.ODBC.con!rst.Set!PL_20(V.uGlobal.uWrkOrd(V.Local.i)!20)
+		F.Intrinsic.Control.EndIf
+
+		F.Intrinsic.Control.If(V.uGlobal.uWrkOrd(V.Local.i)!30,=,"")
+			V.uGlobal.uWrkOrd(v.Local.i)!30.Set(0.00)
+			F.ODBC.con!rst.Set!PL_30(V.uGlobal.uWrkOrd(V.Local.i)!30)
+		F.Intrinsic.Control.Else
+			F.ODBC.con!rst.Set!PL_30(V.uGlobal.uWrkOrd(V.Local.i)!30)
+		F.Intrinsic.Control.EndIf
+
+		F.Intrinsic.Control.If(V.uGlobal.uWrkOrd(V.Local.i)!31,=,"")
+			V.uGlobal.uWrkOrd(v.Local.i)!31.Set(0.00)
+			F.ODBC.con!rst.Set!PL_31(V.uGlobal.uWrkOrd(V.Local.i)!31)
+		F.Intrinsic.Control.Else
+			F.ODBC.con!rst.Set!PL_31(V.uGlobal.uWrkOrd(V.Local.i)!31)
+		F.Intrinsic.Control.EndIf
+
+		F.Intrinsic.Control.If(V.uGlobal.uWrkOrd(V.Local.i)!51,=,"")
+			V.uGlobal.uWrkOrd(v.Local.i)!51.Set(0.00)
+			F.ODBC.con!rst.Set!PL_51(V.uGlobal.uWrkOrd(V.Local.i)!51)
+		F.Intrinsic.Control.Else
+			F.ODBC.con!rst.Set!PL_51(V.uGlobal.uWrkOrd(V.Local.i)!51)
+		F.Intrinsic.Control.EndIf
+
+		F.Intrinsic.Control.If(V.uGlobal.uWrkOrd(V.Local.i)!C1,=,"")
+			V.uGlobal.uWrkOrd(v.Local.i)!C1.Set(0.00)
+			F.ODBC.con!rst.Set!PL_C1(V.uGlobal.uWrkOrd(V.Local.i)!C1)
+		F.Intrinsic.Control.Else
+			F.ODBC.con!rst.Set!PL_C1(V.uGlobal.uWrkOrd(V.Local.i)!C1)
+		F.Intrinsic.Control.EndIf
+
+		F.Intrinsic.Control.If(V.uGlobal.uWrkOrd(V.Local.i)!C2,=,"")
+			V.uGlobal.uWrkOrd(v.Local.i)!C2.Set(0.00)
+			F.ODBC.con!rst.Set!PL_C2(V.uGlobal.uWrkOrd(V.Local.i)!C2)
+		F.Intrinsic.Control.Else
+			F.ODBC.con!rst.Set!PL_C2(V.uGlobal.uWrkOrd(V.Local.i)!C2)
+		F.Intrinsic.Control.EndIf
+
+		F.Intrinsic.Control.If(V.uGlobal.uWrkOrd(V.Local.i)!C3,=,"")
+			V.uGlobal.uWrkOrd(v.Local.i)!C3.Set(0.00)
+			F.ODBC.con!rst.Set!PL_C3(V.uGlobal.uWrkOrd(V.Local.i)!C3)
+		F.Intrinsic.Control.Else
+			F.ODBC.con!rst.Set!PL_C3(V.uGlobal.uWrkOrd(V.Local.i)!C3)
+		F.Intrinsic.Control.EndIf
+
+		F.Intrinsic.Control.If(V.uGlobal.uWrkOrd(V.Local.i)!CC,=,"")
+			V.uGlobal.uWrkOrd(v.Local.i)!CC.Set(0.00)
+			F.ODBC.con!rst.Set!PL_CC(V.uGlobal.uWrkOrd(V.Local.i)!CC)
+		F.Intrinsic.Control.Else
+			F.ODBC.con!rst.Set!PL_CC(V.uGlobal.uWrkOrd(V.Local.i)!CC)
+		F.Intrinsic.Control.EndIf
+
+		F.Intrinsic.Control.If(V.uGlobal.uWrkOrd(V.Local.i)!CG,=,"")
+			V.uGlobal.uWrkOrd(v.Local.i)!CG.Set(0.00)
+			F.ODBC.con!rst.Set!PL_CG(V.uGlobal.uWrkOrd(V.Local.i)!CG)
+		F.Intrinsic.Control.Else
+			F.ODBC.con!rst.Set!PL_CG(V.uGlobal.uWrkOrd(V.Local.i)!CG)
+		F.Intrinsic.Control.EndIf
+
+		F.Intrinsic.Control.If(V.uGlobal.uWrkOrd(V.Local.i)!FA,=,"")
+			V.uGlobal.uWrkOrd(v.Local.i)!FA.Set(0.00)
+			F.ODBC.con!rst.Set!PL_FA(V.uGlobal.uWrkOrd(V.Local.i)!FA)
+		F.Intrinsic.Control.Else
+			F.ODBC.con!rst.Set!PL_FA(V.uGlobal.uWrkOrd(V.Local.i)!FA)
+		F.Intrinsic.Control.EndIf
+
+		F.Intrinsic.Control.If(V.uGlobal.uWrkOrd(V.Local.i)!PB,=,"")
+			V.uGlobal.uWrkOrd(v.Local.i)!PB.Set(0.00)
+			F.ODBC.con!rst.Set!PL_PB(V.uGlobal.uWrkOrd(V.Local.i)!PB)
+		F.Intrinsic.Control.Else
+			F.ODBC.con!rst.Set!PL_PB(V.uGlobal.uWrkOrd(V.Local.i)!PB)
+		F.Intrinsic.Control.EndIf
+
+		F.Intrinsic.Control.If(V.uGlobal.uWrkOrd(V.Local.i)!R1,=,"")
+			V.uGlobal.uWrkOrd(v.Local.i)!R1.Set(0.00)
+			F.ODBC.con!rst.Set!PL_R1(V.uGlobal.uWrkOrd(V.Local.i)!R1)
+		F.Intrinsic.Control.Else
+			F.ODBC.con!rst.Set!PL_R1(V.uGlobal.uWrkOrd(V.Local.i)!R1)
+		F.Intrinsic.Control.EndIf
+
+		F.Intrinsic.Control.If(V.uGlobal.uWrkOrd(V.Local.i)!R2,=,"")
+			V.uGlobal.uWrkOrd(v.Local.i)!R2.Set(0.00)
+			F.ODBC.con!rst.Set!PL_R2(V.uGlobal.uWrkOrd(V.Local.i)!R2)
+		F.Intrinsic.Control.Else
+			F.ODBC.con!rst.Set!PL_R2(V.uGlobal.uWrkOrd(V.Local.i)!R2)
+		F.Intrinsic.Control.EndIf
+
+		F.Intrinsic.Control.If(V.uGlobal.uWrkOrd(V.Local.i)!R3,=,"")
+			V.uGlobal.uWrkOrd(v.Local.i)!R3.Set(0.00)
+			F.ODBC.con!rst.Set!PL_R3(V.uGlobal.uWrkOrd(V.Local.i)!R3)
+		F.Intrinsic.Control.Else
+			F.ODBC.con!rst.Set!PL_R3(V.uGlobal.uWrkOrd(V.Local.i)!R3)
+		F.Intrinsic.Control.EndIf
+
+		F.Intrinsic.Control.If(V.uGlobal.uWrkOrd(V.Local.i)!R5,=,"")
+			V.uGlobal.uWrkOrd(v.Local.i)!R5.Set(0.00)
+			F.ODBC.con!rst.Set!PL_R5(V.uGlobal.uWrkOrd(V.Local.i)!R5)
+		F.Intrinsic.Control.Else
+			F.ODBC.con!rst.Set!PL_R5(V.uGlobal.uWrkOrd(V.Local.i)!R5)
+		F.Intrinsic.Control.EndIf
+
+		F.Intrinsic.Control.If(V.uGlobal.uWrkOrd(V.Local.i)!S1,=,"")
+			V.uGlobal.uWrkOrd(v.Local.i)!S1.Set(0.00)
+			F.ODBC.con!rst.Set!PL_S1(V.uGlobal.uWrkOrd(V.Local.i)!S1)
+		F.Intrinsic.Control.Else
+			F.ODBC.con!rst.Set!PL_S1(V.uGlobal.uWrkOrd(V.Local.i)!S1)
+		F.Intrinsic.Control.EndIf
+
+		F.Intrinsic.Control.If(V.uGlobal.uWrkOrd(V.Local.i)!S2,=,"")
+			V.uGlobal.uWrkOrd(v.Local.i)!S2.Set(0.00)
+			F.ODBC.con!rst.Set!PL_S2(V.uGlobal.uWrkOrd(V.Local.i)!S2)
+		F.Intrinsic.Control.Else
+			F.ODBC.con!rst.Set!PL_S2(V.uGlobal.uWrkOrd(V.Local.i)!S2)
+		F.Intrinsic.Control.EndIf
+
+		F.Intrinsic.Control.If(V.uGlobal.uWrkOrd(V.Local.i)!S3,=,"")
+			V.uGlobal.uWrkOrd(v.Local.i)!S3.Set(0.00)
+			F.ODBC.con!rst.Set!PL_S3(V.uGlobal.uWrkOrd(V.Local.i)!S3)
+		F.Intrinsic.Control.Else
+			F.ODBC.con!rst.Set!PL_S3(V.uGlobal.uWrkOrd(V.Local.i)!S3)
+		F.Intrinsic.Control.EndIf
+
+		F.Intrinsic.Control.If(V.uGlobal.uWrkOrd(V.Local.i)!W1,=,"")
+			V.uGlobal.uWrkOrd(v.Local.i)!W1.Set(0.00)
+			F.ODBC.con!rst.Set!PL_W1(V.uGlobal.uWrkOrd(V.Local.i)!W1)
+		F.Intrinsic.Control.Else
+			F.ODBC.con!rst.Set!PL_W1(V.uGlobal.uWrkOrd(V.Local.i)!W1)
+		F.Intrinsic.Control.EndIf
+
+		F.Intrinsic.Control.If(V.uGlobal.uWrkOrd(V.Local.i)!W2,=,"")
+			V.uGlobal.uWrkOrd(v.Local.i)!W2.Set(0.00)
+			F.ODBC.con!rst.Set!PL_W2(V.uGlobal.uWrkOrd(V.Local.i)!W2)
+		F.Intrinsic.Control.Else
+			F.ODBC.con!rst.Set!PL_W2(V.uGlobal.uWrkOrd(V.Local.i)!W2)
+		F.Intrinsic.Control.EndIf
+
+		F.Intrinsic.Control.If(V.uGlobal.uWrkOrd(V.Local.i)!W3,=,"")
+			V.uGlobal.uWrkOrd(v.Local.i)!W3.Set(0.00)
+			F.ODBC.con!rst.Set!PL_W3(V.uGlobal.uWrkOrd(V.Local.i)!W3)
+		F.Intrinsic.Control.Else
+			F.ODBC.con!rst.Set!PL_W3(V.uGlobal.uWrkOrd(V.Local.i)!W3)
+		F.Intrinsic.Control.EndIf
+
+		F.Intrinsic.Control.If(V.uGlobal.uWrkOrd(V.Local.i)!W5,=,"")
+			V.uGlobal.uWrkOrd(v.Local.i)!W5.Set(0.00)
+			F.ODBC.con!rst.Set!PL_W5(V.uGlobal.uWrkOrd(V.Local.i)!W5)
+		F.Intrinsic.Control.Else
+			F.ODBC.con!rst.Set!PL_W5(V.uGlobal.uWrkOrd(V.Local.i)!W5)
+		F.Intrinsic.Control.EndIf
+
+		F.Intrinsic.Control.If(V.uGlobal.uWrkOrd(V.Local.i)!Z1,=,"")
+			V.uGlobal.uWrkOrd(v.Local.i)!Z1.Set(0.00)
+			F.ODBC.con!rst.Set!PL_Z1(V.uGlobal.uWrkOrd(V.Local.i)!Z1)
+		F.Intrinsic.Control.Else
+			F.ODBC.con!rst.Set!PL_Z1(V.uGlobal.uWrkOrd(V.Local.i)!Z1)
+		F.Intrinsic.Control.EndIf
+
+		F.Intrinsic.Control.If(V.uGlobal.uWrkOrd(V.Local.i)!Z2,=,"")
+			V.uGlobal.uWrkOrd(v.Local.i)!Z2.Set(0.00)
+			F.ODBC.con!rst.Set!PL_Z2(V.uGlobal.uWrkOrd(V.Local.i)!Z2)
+		F.Intrinsic.Control.Else
+			F.ODBC.con!rst.Set!PL_Z2(V.uGlobal.uWrkOrd(V.Local.i)!Z2)
+		F.Intrinsic.Control.EndIf
+
+		F.Intrinsic.Control.If(V.uGlobal.uWrkOrd(V.Local.i)!ZZ,=,"")
+			V.uGlobal.uWrkOrd(v.Local.i)!ZZ.Set(0.00)
+			F.ODBC.con!rst.Set!PL_ZZ(V.uGlobal.uWrkOrd(V.Local.i)!ZZ)
+		F.Intrinsic.Control.Else
+			F.ODBC.con!rst.Set!PL_ZZ(V.uGlobal.uWrkOrd(V.Local.i)!ZZ)
+		F.Intrinsic.Control.EndIf
+
+		F.ODBC.con!rst.Set!BEG_DATE(V.Global.uBDate.PervasiveDate)
+		F.ODBC.con!rst.Set!END_DATE(V.Global.uEDate.PervasiveDate)
+		F.ODBC.con!rst.Update
+	F.Intrinsic.Control.Next(V.Local.i)
+F.Intrinsic.Control.EndIf
+F.Global.BI.GetIDFromName("ATG_3718_Gkd_Sar.rpt",V.Local.iBi)
+V.Local.sParam.Set("TRMNL")
+V.Local.sParamVal.Set(V.Caller.Terminal)
+F.Global.BI.PrintReport(V.Local.iBi,0,V.Local.sParam,V.Local.sParamVal,"",False)
+F.Intrinsic.Control.CallSub(Fgkd_unload)
+
+Function.Intrinsic.Control.ExitSub
+
+Function.Intrinsic.Control.Label("Write_Err")
+Function.Intrinsic.Control.If(Variable.Ambient.ErrorNumber,"<>",0)
+	Function.Intrinsic.String.Concat("Error Occurred ",Variable.Ambient.ErrorNumber," with description ",Variable.Ambient.ErrorDescription,Variable.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.Write.End
+
+
